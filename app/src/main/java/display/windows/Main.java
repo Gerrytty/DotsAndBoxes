@@ -1,5 +1,7 @@
-package display;
+package display.windows;
 
+import display.elements.GreenButton;
+import display.elements.StageParams;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,6 +17,8 @@ import game.*;
 
 public class Main extends Application {
 
+    final static Game game = new Game();
+
     public static void main(String[] args) {
 
         launch(args);
@@ -22,16 +26,19 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(final Stage stage) throws Exception {
 
-        final Game game = new Game();
-
-        Button singlePlay = createButton("Single play");
-        Button multiPlayer = createButton("Multi player");
+        Button singlePlay = new GreenButton("Single play").getButton();
+        Button multiPlayer = new GreenButton("Multi player").getButton();
 
         singlePlay.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 game.setMode(Mode.SINGLE_PLAY);
+                try {
+                    new SinglePlay().start(stage);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -43,7 +50,7 @@ public class Main extends Application {
 
         Scene scene = new Scene(getPane(createText(), singlePlay, multiPlayer));
 
-        setStageParams(stage, scene);
+        new StageParams().setParams(stage, scene);
 
         stage.show();
 
@@ -56,29 +63,6 @@ public class Main extends Application {
         text.setStyle("-fx-font-size: 60px");
 
         return text;
-    }
-
-    private static Button createButton(String text) {
-
-        Button button = new Button(text);
-
-        button.setMinWidth(450);
-        button.setMinHeight(60);
-        button.setStyle("-fx-font: 22 arial; -fx-base: #218413; -fx-text-fill: #ffffff");
-
-        return button;
-    }
-
-    private static void setStageParams(Stage stage, Scene scene) {
-
-        stage.setScene(scene);
-        stage.setTitle("Dots and Boxes");
-        stage.setFullScreen(true);
-
-        // size of the window
-        stage.setWidth(600);
-        stage.setHeight(500);
-
     }
 
     private static GridPane getPane(Text text, Button singlePlay, Button multiPlayer) {

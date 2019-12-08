@@ -1,9 +1,13 @@
 package game;
 
+import javafx.scene.control.Button;
+
 public class Point {
 
     private int x;
     private int y;
+
+    private Button button;
 
     public Point() {
 
@@ -28,5 +32,13 @@ public class Point {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public Button getButton() {
+        return button;
+    }
+
+    public void setButton(Button button) {
+        this.button = button;
     }
 }

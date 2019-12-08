@@ -1,4 +1,4 @@
-# Box and Dots
+# Dots and Boxes
 
 ## Rules
 
