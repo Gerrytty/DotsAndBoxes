@@ -1,6 +1,6 @@
 package game;
 
-import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
 
 import java.util.ArrayList;
 
@@ -11,10 +11,10 @@ public class Point {
 
     private ArrayList<Point> listOfNeighbors;
 
-    private Button button;
+    private ToggleButton button;
 
     public Point() {
-        listOfNeighbors = new ArrayList<Point>();
+        listOfNeighbors = new ArrayList<>();
     }
 
     public Point(int x, int y) {
@@ -23,7 +23,7 @@ public class Point {
         this.y = y;
     }
 
-    public Point(Button button, int x, int y) {
+    public Point(ToggleButton button, int x, int y) {
         listOfNeighbors = new ArrayList<Point>();
         this.x = x;
         this.y = y;
@@ -46,11 +46,11 @@ public class Point {
         this.y = y;
     }
 
-    public Button getButton() {
+    public ToggleButton getButton() {
         return button;
     }
 
-    public void setButton(Button button) {
+    public void setButton(ToggleButton button) {
         this.button = button;
     }
 
@@ -60,5 +60,21 @@ public class Point {
 
     public ArrayList<Point> getListOfNeighbors() {
         return listOfNeighbors;
+    }
+
+    public void makeNeighborsGreen() {
+        listOfNeighbors.forEach(s -> s.button.setStyle("-fx-base: #31c318"));
+    }
+
+    public void makeNeighborsWhite() {
+        listOfNeighbors.forEach(s -> s.button.setStyle("-fx-base: #ffffff"));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        Point p = (Point) obj;
+
+        return p.getX() == this.x && p.getY() == this.y;
     }
 }

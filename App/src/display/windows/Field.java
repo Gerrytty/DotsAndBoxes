@@ -1,3 +1,5 @@
+package display.windows;
+
 import game.Point;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -5,9 +7,13 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -37,6 +43,62 @@ public class Field extends Application {
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setGridLinesVisible(true);
 
+        gridPane.setStyle("-fx-background-color: #09095f");
+
+        setColumns(gridPane, w);
+        setRows(gridPane, h);
+
+        ArrayList<Point> list = setPoints(gridPane, h, w);
+
+        setNeighbors(list);
+
+
+        for (int i = 0; i < list.size(); i++) {
+
+            Point point = list.get(i);
+
+            ToggleButton button = point.getButton();
+
+            button.setOnAction(event -> {
+
+                ArrayList<Point> neighbors = point.getListOfNeighbors();
+
+                if(button.isSelected()) {
+                    point.makeNeighborsGreen();
+
+
+                    for (int j = 0; j < list.size(); j++) {
+                        Point p = list.get(j);
+
+                        if(!neighbors.contains(p) && !p.equals(point)) {
+                            p.getButton().setDisable(true);
+                        }
+                    }
+                }
+
+                else {
+
+                    for (int j = 0; j < list.size(); j++) {
+                        Point p = list.get(j);
+
+                        if(!neighbors.contains(p)) {
+                            p.getButton().setDisable(false);
+                        }
+                    }
+
+                    point.makeNeighborsWhite();
+                }
+
+            });
+
+        }
+
+        return gridPane;
+    }
+
+
+    private void setColumns(GridPane gridPane, int w) {
+
         for (int i = 0; i < w; i++) {
             if(i % 2 != 0) {
                 gridPane.getColumnConstraints().add(new ColumnConstraints(100));
@@ -45,6 +107,9 @@ public class Field extends Application {
                 gridPane.getColumnConstraints().add(new ColumnConstraints(20));
             }
         }
+    }
+
+    private void setRows(GridPane gridPane, int h) {
 
         for (int i = 0; i < h; i++) {
             if(i % 2 != 0) {
@@ -55,27 +120,45 @@ public class Field extends Application {
             }
         }
 
-        ArrayList<Point> list = new ArrayList<Point>();
+    }
+
+    private ToggleButton createButton() {
+
+        ToggleButton button = new ToggleButton();
+
+        button.setStyle("-fx-base: #ffffff");
+        double r = 10;
+        button.setShape(new Circle(r));
+        button.setMinSize(2 * r, 2 * r);
+        button.setMaxSize(2 * r, 2 * r);
+
+        return button;
+
+    }
+
+    private ArrayList<Point> setPoints(GridPane gridPane, int h, int w) {
+
+        ArrayList<Point> list = new ArrayList<>();
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
                 if(i % 2 == 0 && j % 2 == 0) {
 
-                    Button button = new Button();
-                    button.setStyle("-fx-background-radius: 30;");
-                    final int finalI = i;
-                    final int finalJ = j;
-                    button.setOnAction(new EventHandler<ActionEvent>() {
-                        public void handle(ActionEvent event) {
-                            System.out.println(finalI + " " + finalJ);
-                        }
-                    });
+                    ToggleButton button = createButton();
+
                     gridPane.add(button, i, j);
                     list.add(new Point(button, i, j));
+
 
                 }
             }
         }
+
+        return list;
+
+    }
+
+    private void setNeighbors(ArrayList<Point> list) {
 
         for (int i = 0; i < list.size(); i++) {
 
@@ -86,47 +169,18 @@ public class Field extends Application {
             for (int j = 0; j < list.size(); j++) {
 
                 Point point1 = list.get(j);
-                int x1 = point.getX();
-                int y1 = point.getY();
-
-                System.out.println(j + ": " + x1 + " " + y1);
-
-                if((x1 == x && y1 == y - 2)) {
-                    System.out.println("1");
-                }
-
-                if(x1 == x + 2 && y1 == y) {
-                    System.out.println("2");
-                }
-
-                if(x1 == x && y1 == y + 2) {
-                    System.out.println("3");
-                }
-
-                if(x1 == x - 2 && y1 == y) {
-                    System.out.println("4");
-                }
+                int x1 = point1.getX();
+                int y1 = point1.getY();
 
                 if ((x1 == x && y1 == y - 2) || (x1 == x + 2 && y1 == y) ||
                         (x1 == x && y1 == y + 2) || (x1 == x - 2 && y1 == y)) {
-
-                    System.out.println("kek");
 
                     point.addNeighbor(point1);
 
                 }
 
             }
-
-            System.out.println("---");
-
         }
-
-//        for (int i = 0; i < list.size(); i++) {
-//            System.out.println(list.get(i).getListOfNeighbors().size());
-//        }
-
-        return gridPane;
     }
 
 }
