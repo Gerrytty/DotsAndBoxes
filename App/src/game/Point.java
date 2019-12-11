@@ -8,6 +8,7 @@ public class Point {
 
     private int x;
     private int y;
+    private boolean isFree;
 
     private ArrayList<Point> listOfNeighbors;
 
@@ -18,15 +19,13 @@ public class Point {
     }
 
     public Point(int x, int y) {
-        listOfNeighbors = new ArrayList<Point>();
+        this();
         this.x = x;
         this.y = y;
     }
 
     public Point(ToggleButton button, int x, int y) {
-        listOfNeighbors = new ArrayList<Point>();
-        this.x = x;
-        this.y = y;
+        this(x, y);
         this.button = button;
     }
 
@@ -68,6 +67,14 @@ public class Point {
 
     public void makeNeighborsWhite() {
         listOfNeighbors.forEach(s -> s.button.setStyle("-fx-base: #ffffff"));
+    }
+
+    public boolean isFree() {
+        return isFree;
+    }
+
+    public void setFree(boolean free) {
+        isFree = free;
     }
 
     @Override

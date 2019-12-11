@@ -2,17 +2,12 @@ package display.windows;
 
 import game.Point;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
@@ -20,7 +15,7 @@ import java.util.ArrayList;
 
 public class Field extends Application {
 
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
 
         Scene scene = new Scene(generateField(2, 3));
         stage.setScene(scene);
@@ -51,11 +46,15 @@ public class Field extends Application {
         ArrayList<Point> list = setPoints(gridPane, h, w);
 
         setNeighbors(list);
+        setAction(list);
+
+        return gridPane;
+    }
 
 
-        for (int i = 0; i < list.size(); i++) {
+    private void setAction(ArrayList<Point> allPoints) {
 
-            Point point = list.get(i);
+        allPoints.forEach(point -> {
 
             ToggleButton button = point.getButton();
 
@@ -64,36 +63,25 @@ public class Field extends Application {
                 ArrayList<Point> neighbors = point.getListOfNeighbors();
 
                 if(button.isSelected()) {
+
                     point.makeNeighborsGreen();
 
+                    allPoints.forEach(p -> { if(!neighbors.contains(p) && !p.equals(point)) p.getButton().setDisable(true); });
 
-                    for (int j = 0; j < list.size(); j++) {
-                        Point p = list.get(j);
-
-                        if(!neighbors.contains(p) && !p.equals(point)) {
-                            p.getButton().setDisable(true);
-                        }
-                    }
                 }
 
                 else {
 
-                    for (int j = 0; j < list.size(); j++) {
-                        Point p = list.get(j);
-
-                        if(!neighbors.contains(p)) {
-                            p.getButton().setDisable(false);
-                        }
-                    }
+                    allPoints.forEach(p -> { if(!neighbors.contains(p)) p.getButton().setDisable(false); });
 
                     point.makeNeighborsWhite();
+
                 }
 
             });
 
-        }
+        });
 
-        return gridPane;
     }
 
 

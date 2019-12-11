@@ -31,22 +31,16 @@ public class Main extends Application {
         Button singlePlay = new GreenButton("Single play").getButton();
         Button multiPlayer = new GreenButton("Multi player").getButton();
 
-        singlePlay.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                game.setMode(Mode.SINGLE_PLAY);
-                try {
-                    new SinglePlay().start(stage);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        singlePlay.setOnAction(event -> {
+            game.setMode(Mode.SINGLE_PLAY);
+            try {
+                new SinglePlay().start(stage);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 
-        multiPlayer.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                game.setMode(Mode.MULTI_PLAYER);
-            }
-        });
+        multiPlayer.setOnAction(event -> game.setMode(Mode.MULTI_PLAYER));
 
         Scene scene = new Scene(getPane(createText(), singlePlay, multiPlayer));
 
