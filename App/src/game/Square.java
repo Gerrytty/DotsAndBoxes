@@ -1,20 +1,41 @@
 package game;
 
-import java.util.ArrayList;
-
 public class Square {
 
-    ArrayList<Point> list;
+    private int x;
+    private int y;
+    private boolean isFill;
 
     public Square() {
-        list = new ArrayList<Point>();
+
     }
 
-    public void addPoint(Point point) {
-        list.add(point);
+    public Square(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
-    public Point getPoint(int index) {
-        return list.get(index);
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public boolean isFill() {
+        return isFill;
+    }
+
+    public void setFill(boolean fill) {
+        isFill = fill;
     }
 }

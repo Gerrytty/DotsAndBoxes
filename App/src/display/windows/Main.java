@@ -1,10 +1,9 @@
 package display.windows;
 
+import client.Client;
 import display.elements.GreenButton;
 import display.elements.StageParams;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,6 +19,12 @@ public class Main extends Application {
     final static Game game = new Game();
 
     public static void main(String[] args) {
+
+        String ip = "127.0.0.1";
+        int port = 7000;
+
+        Client client = new Client();
+        client.startConnection(ip, port);
 
         launch(args);
 

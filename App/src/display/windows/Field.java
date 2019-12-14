@@ -1,6 +1,9 @@
 package display.windows;
 
+import client.Player;
+import game.Line;
 import game.Point;
+import game.Square;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -8,7 +11,10 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -47,6 +53,9 @@ public class Field extends Application {
 
         setNeighbors(list);
         setAction(list);
+
+        setSquares(h, w);
+        setLines(gridPane, h, w);
 
         return gridPane;
     }
@@ -137,13 +146,65 @@ public class Field extends Application {
                     gridPane.add(button, i, j);
                     list.add(new Point(button, i, j));
 
-
                 }
             }
         }
 
         return list;
 
+    }
+
+    private ArrayList<Square> setSquares(int h, int w) {
+
+        ArrayList<Square> list = new ArrayList<>();
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                if(i % 2 != 0 && j % 2 != 0) {
+                    list.add(new Square(i, j));
+                }
+            }
+        }
+
+        return list;
+    }
+
+    private ArrayList<Line> setLines(GridPane gridPane, int h, int w) {
+
+        ArrayList<Line> list = new ArrayList<>();
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                if(i % 2 != 0 && j % 2 == 0) {
+                    list.add(new Line("horizontal"));
+                    javafx.scene.shape.Line line = new javafx.scene.shape.Line(0,0,100, 0);
+                    line.setStrokeWidth(5);
+                    line.setStroke(Color.WHITE);
+                    gridPane.add(line, i, j);
+                    System.out.println(i + " " + j);
+                }
+                else if(i % 2 == 0 && j % 2 != 0) {
+                    list.add(new Line("vertical"));
+                    javafx.scene.shape.Line line = new javafx.scene.shape.Line(5,0,5, 100);
+                    line.setStrokeWidth(5);
+                    line.setTranslateX(8);
+                    line.setStroke(Color.WHITE);
+                    gridPane.add(line, i, j);
+                }
+            }
+        }
+
+        return list;
+
+    }
+
+    private void addTextOnSquare(GridPane gridPane, Square square, Player player) {
+        Text text = new Text(player.getLetter());
+        text.setStyle("-fx-font-size: 80px;");
+        text.setFill(Color.WHITE);
+        text.setTextAlignment(TextAlignment.CENTER);
+
+        gridPane.add(text, square.getX(), square.getY());
     }
 
     private void setNeighbors(ArrayList<Point> list) {

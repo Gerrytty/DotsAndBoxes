@@ -5,8 +5,14 @@ public class Line {
     private Point A;
     private Point B;
 
+    private String pos;
+
     public Line() {
 
+    }
+
+    public Line(String pos) {
+        this.pos = pos;
     }
 
     public Line(Point A, Point B) {
@@ -28,5 +34,13 @@ public class Line {
 
     public void setB(Point b) {
         B = b;
+    }
+
+    public String getPos() {
+        return pos;
+    }
+
+    public void setPos(String pos) {
+        this.pos = pos;
     }
 }
