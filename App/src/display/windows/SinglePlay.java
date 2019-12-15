@@ -2,6 +2,7 @@ package display.windows;
 
 import display.elements.GreenButton;
 import display.elements.StageParams;
+import game.Game;
 import javafx.application.Application;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -12,6 +13,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import java.util.Arrays;
 
 
 public class SinglePlay extends Application {
@@ -29,6 +32,8 @@ public class SinglePlay extends Application {
         Button button3 = new GreenButton("8x6").getButton();
         Button button4 = new GreenButton("11x9").getButton();
 
+        setActions(stage, button1, button2, button3, button4);
+
         FlowPane pane = new FlowPane(Orientation.VERTICAL, 20, 20, text, button1, button2, button3, button4);
         pane.setStyle("-fx-background-color: #09095f");
         pane.setAlignment(Pos.CENTER);
@@ -37,9 +42,28 @@ public class SinglePlay extends Application {
 
         new StageParams().setParams(stage, scene);
 
+        System.out.println(Main.game.getMode());
+
         stage.show();
 
-        System.out.println(Main.game.getMode());
+    }
+
+    private void setActions(Stage stage, Button... buttons) {
+
+        Game game = Main.game;
+
+        Arrays.stream(buttons).forEach(button -> button.setOnAction(event -> {
+            String[] strings = button.getText().split("x");
+            game.setHeight(Integer.parseInt(strings[1]));
+            game.setWidth(Integer.parseInt(strings[0]));
+
+            try {
+                new Field().start(stage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }));
 
     }
 }

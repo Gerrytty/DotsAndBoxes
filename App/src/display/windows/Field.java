@@ -14,7 +14,6 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public class Field extends Application {
 
     public void start(Stage stage) {
 
-        Scene scene = new Scene(generateField(2, 3));
+        Scene scene = new Scene(generateField(Main.game.getHeight(), Main.game.getWidth()));
         stage.setScene(scene);
         stage.setFullScreen(true);
 
@@ -54,8 +53,9 @@ public class Field extends Application {
         setNeighbors(list);
         setAction(list);
 
-        setSquares(h, w);
+        ArrayList<Square> squares = setSquares(h, w);
         setLines(gridPane, h, w);
+        addTextOnSquare(gridPane, squares.get(0), new Player("A"));
 
         return gridPane;
     }
@@ -154,7 +154,7 @@ public class Field extends Application {
 
     }
 
-    private ArrayList<Square> setSquares(int h, int w) {
+    public ArrayList<Square> setSquares(int h, int w) {
 
         ArrayList<Square> list = new ArrayList<>();
 
@@ -176,20 +176,23 @@ public class Field extends Application {
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
                 if(i % 2 != 0 && j % 2 == 0) {
+
                     list.add(new Line("horizontal"));
                     javafx.scene.shape.Line line = new javafx.scene.shape.Line(0,0,100, 0);
                     line.setStrokeWidth(5);
                     line.setStroke(Color.WHITE);
                     gridPane.add(line, i, j);
-                    System.out.println(i + " " + j);
+
                 }
                 else if(i % 2 == 0 && j % 2 != 0) {
+
                     list.add(new Line("vertical"));
-                    javafx.scene.shape.Line line = new javafx.scene.shape.Line(5,0,5, 100);
+                    javafx.scene.shape.Line line = new javafx.scene.shape.Line(0,0,0, 100);
                     line.setStrokeWidth(5);
                     line.setTranslateX(8);
                     line.setStroke(Color.WHITE);
                     gridPane.add(line, i, j);
+
                 }
             }
         }
@@ -199,37 +202,38 @@ public class Field extends Application {
     }
 
     private void addTextOnSquare(GridPane gridPane, Square square, Player player) {
+
         Text text = new Text(player.getLetter());
         text.setStyle("-fx-font-size: 80px;");
         text.setFill(Color.WHITE);
-        text.setTextAlignment(TextAlignment.CENTER);
+        text.setTranslateX(20);
 
         gridPane.add(text, square.getX(), square.getY());
     }
 
     private void setNeighbors(ArrayList<Point> list) {
 
-        for (int i = 0; i < list.size(); i++) {
+        list.forEach(point -> {
 
-            Point point = list.get(i);
             int x = point.getX();
             int y = point.getY();
 
-            for (int j = 0; j < list.size(); j++) {
+            list.forEach(anotherPoint -> {
 
-                Point point1 = list.get(j);
-                int x1 = point1.getX();
-                int y1 = point1.getY();
+                int x1 = anotherPoint.getX();
+                int y1 = anotherPoint.getY();
 
                 if ((x1 == x && y1 == y - 2) || (x1 == x + 2 && y1 == y) ||
                         (x1 == x && y1 == y + 2) || (x1 == x - 2 && y1 == y)) {
 
-                    point.addNeighbor(point1);
+                    point.addNeighbor(anotherPoint);
 
                 }
 
-            }
-        }
+            });
+
+        });
+
     }
 
 }

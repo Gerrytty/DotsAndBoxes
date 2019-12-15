@@ -10,4 +10,8 @@ public class Player {
     public void setLetter(String letter) {
         this.letter = letter;
     }
+
+    public Player(String letter) {
+        this.letter = letter;
+    }
 }

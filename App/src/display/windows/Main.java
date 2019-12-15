@@ -31,18 +31,21 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(final Stage stage) throws Exception {
+    public void start(final Stage stage) {
 
         Button singlePlay = new GreenButton("Single play").getButton();
         Button multiPlayer = new GreenButton("Multi player").getButton();
 
         singlePlay.setOnAction(event -> {
+
             game.setMode(Mode.SINGLE_PLAY);
+
             try {
                 new SinglePlay().start(stage);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
         });
 
         multiPlayer.setOnAction(event -> game.setMode(Mode.MULTI_PLAYER));
@@ -56,9 +59,9 @@ public class Main extends Application {
     }
 
     private static Text createText() {
+
         Text text = new Text("Box and Dots");
         text.setFill(Color.WHITE);
-
         text.setStyle("-fx-font-size: 60px");
 
         return text;
