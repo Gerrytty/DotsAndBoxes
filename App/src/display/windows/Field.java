@@ -1,6 +1,9 @@
 package display.windows;
 
+import client.Client;
 import client.Player;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import game.Line;
 import game.Point;
 import game.Square;
@@ -22,13 +25,27 @@ public class Field extends Application {
 
     public void start(Stage stage) {
 
-        Scene scene = new Scene(generateField(Main.game.getHeight(), Main.game.getWidth()));
+        GridPane gridPane = generateField(Main.game.getHeight(), Main.game.getWidth());
+
+        Scene scene = new Scene(gridPane);
         stage.setScene(scene);
         stage.setFullScreen(true);
 
         // size of the window
         stage.setWidth(600);
         stage.setHeight(500);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        String jsonValue = null;
+
+        try {
+            jsonValue = mapper.writeValueAsString(Main.game);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        Client.sendMessage(jsonValue);
 
         stage.show();
 
@@ -119,7 +136,7 @@ public class Field extends Application {
 
     }
 
-    private ToggleButton createButton() {
+    public ToggleButton createButton() {
 
         ToggleButton button = new ToggleButton();
 
@@ -133,7 +150,7 @@ public class Field extends Application {
 
     }
 
-    private ArrayList<Point> setPoints(GridPane gridPane, int h, int w) {
+    public ArrayList<Point> setPoints(GridPane gridPane, int h, int w) {
 
         ArrayList<Point> list = new ArrayList<>();
 
@@ -150,6 +167,8 @@ public class Field extends Application {
             }
         }
 
+//        Main.game.setPoints(list);
+
         return list;
 
     }
@@ -165,6 +184,8 @@ public class Field extends Application {
                 }
             }
         }
+
+        Main.game.setSquares(list);
 
         return list;
     }
@@ -209,6 +230,7 @@ public class Field extends Application {
         text.setTranslateX(20);
 
         gridPane.add(text, square.getX(), square.getY());
+
     }
 
     private void setNeighbors(ArrayList<Point> list) {

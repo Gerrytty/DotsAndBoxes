@@ -9,13 +9,13 @@ import org.junit.runners.Parameterized;
 import java.util.Arrays;
 
 @RunWith(value = Parameterized.class)
-public class FieldTest {
+public class SquaresTest {
 
     private int height;
     private int width;
     private int expected;
 
-    public FieldTest(int height, int width, int expected) {
+    public SquaresTest(int height, int width, int expected) {
         this.height = height;
         this.width = width;
         this.expected = expected;
@@ -33,7 +33,7 @@ public class FieldTest {
     }
 
     @Test
-    public void paramTest() {
+    public void setSquares() {
         int h = height * 2 + 1;
         int w = width * 2 + 1;
 

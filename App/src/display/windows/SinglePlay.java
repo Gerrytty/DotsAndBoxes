@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 public class SinglePlay extends Application {
 
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
 
         stage.setFullScreen(true);
 

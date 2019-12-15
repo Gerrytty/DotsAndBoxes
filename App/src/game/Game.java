@@ -69,4 +69,6 @@ public class Game {
     public void setSquares(ArrayList<Square> squares) {
         this.squares = squares;
     }
+
+
 }

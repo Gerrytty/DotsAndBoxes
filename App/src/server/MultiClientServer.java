@@ -15,6 +15,7 @@ public class MultiClientServer {
     private List<ClientHandler> clients;
 
     public MultiClientServer() {
+
         clients = new ArrayList<>();
     }
 

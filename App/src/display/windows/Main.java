@@ -23,7 +23,7 @@ public class Main extends Application {
         String ip = "127.0.0.1";
         int port = 7000;
 
-        Client client = new Client();
+        Client client = Client.getClient();
         client.startConnection(ip, port);
 
         launch(args);

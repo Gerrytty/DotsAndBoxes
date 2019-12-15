@@ -7,11 +7,26 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class Client {
-    private Socket clientSocket;
-    private PrintWriter writer;
-    private BufferedReader reader;
+    private static Socket clientSocket;
+    private static PrintWriter writer;
+    private static BufferedReader reader;
 
-    public void startConnection(String ip, int port) {
+    private static Client client;
+
+    private Client() {
+
+    }
+
+    public static Client getClient() {
+
+        if(client == null) {
+            return new Client();
+        }
+
+        else return client;
+    }
+
+    public static void startConnection(String ip, int port) {
 
         try {
             clientSocket = new Socket(ip, port);
@@ -25,11 +40,11 @@ public class Client {
 
     }
 
-    public void sendMessage(String message) {
+    public static void sendMessage(String message) {
         writer.println(message);
     }
 
-    private Runnable receiveMessagesTask = new Runnable() {
+    private static Runnable receiveMessagesTask = new Runnable() {
         public void run() {
             while (true) {
                 try {
@@ -42,6 +57,15 @@ public class Client {
         }
     };
 
+    public static void closeConnection() {
+
+        try {
+            clientSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }
 

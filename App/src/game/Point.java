@@ -15,6 +15,7 @@ public class Point {
     private ToggleButton button;
 
     public Point() {
+
         listOfNeighbors = new ArrayList<>();
     }
 
