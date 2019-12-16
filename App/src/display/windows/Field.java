@@ -6,8 +6,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import game.Line;
 import game.Point;
+import game.PointWithButton;
 import game.Square;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
@@ -35,17 +37,17 @@ public class Field extends Application {
         stage.setWidth(600);
         stage.setHeight(500);
 
-        ObjectMapper mapper = new ObjectMapper();
+//        ObjectMapper mapper = new ObjectMapper();
 
-        String jsonValue = null;
-
-        try {
-            jsonValue = mapper.writeValueAsString(Main.game);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        Client.sendMessage(jsonValue);
+//        String jsonValue = null;
+//
+//        try {
+//            jsonValue = mapper.writeValueAsString(Main.game);
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
+//
+//        Client.sendMessage(jsonValue);
 
         stage.show();
 
@@ -56,29 +58,72 @@ public class Field extends Application {
         int h = height * 2 + 1;
         int w = width * 2 + 1;
 
+        GridPane gridPane = createGridPane();
+
+        setColumns(gridPane, w);
+        setRows(gridPane, h);
+
+        ArrayList<PointWithButton> pointWithButtons = new ArrayList<>();
+
+        ArrayList<Point> list = setPoints(gridPane, pointWithButtons, h, w);
+
+        setNeighbors(list);
+
+//        setActions(pointWithButtons);
+
+//        ArrayList<Square> squares = setSquares(h, w);
+//        setAction(list);
+//        setLines(gridPane, h, w);
+//        addTextOnSquare(gridPane, squares.get(0), new Player("A"));
+
+        return gridPane;
+    }
+
+    public GridPane createGridPane() {
+
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setGridLinesVisible(true);
 
         gridPane.setStyle("-fx-background-color: #09095f");
 
-        setColumns(gridPane, w);
-        setRows(gridPane, h);
-
-        ArrayList<Point> list = setPoints(gridPane, h, w);
-
-        setNeighbors(list);
-        setAction(list);
-
-        ArrayList<Square> squares = setSquares(h, w);
-        setLines(gridPane, h, w);
-        addTextOnSquare(gridPane, squares.get(0), new Player("A"));
-
         return gridPane;
     }
 
+//    private void setActions(ArrayList<PointWithButton> pointWithButtons) {
+//
+//        pointWithButtons.forEach(pointWithButton -> {
+//
+//            ToggleButton button = pointWithButton.getButton();
+//
+//            Point point = pointWithButton.getPoint();
+//            ArrayList<Point> neighbours = point.getListOfNeighbors();
+//
+//            button.setOnAction(event -> {
+//
+//                for (int i = 0; i < neighbours.size(); i++) {
+//                    Point neighbor = neighbours.get(i);
+//
+//                    for (int j = 0; j < pointWithButtons.size(); j++) {
+//
+//                        PointWithButton p = pointWithButtons.get(i);
+//
+//                        if(p.getPoint().equals(neighbor)) {
+//                            p.getButton().setDisable(true);
+//                        }
+//                    }
+//
+//                }
+//
+//            });
+//
+//        });
+//
+//
+//    }
 
-    private void setAction(ArrayList<Point> allPoints) {
+
+    private void setAction(ArrayList<PointWithButton> allPoints) {
 
         allPoints.forEach(point -> {
 
@@ -86,11 +131,11 @@ public class Field extends Application {
 
             button.setOnAction(event -> {
 
-                ArrayList<Point> neighbors = point.getListOfNeighbors();
+                ArrayList<Point> neighbors = point.getPoint().getListOfNeighbors();
 
                 if(button.isSelected()) {
 
-                    point.makeNeighborsGreen();
+                    point;
 
                     allPoints.forEach(p -> { if(!neighbors.contains(p) && !p.equals(point)) p.getButton().setDisable(true); });
 
@@ -100,7 +145,7 @@ public class Field extends Application {
 
                     allPoints.forEach(p -> { if(!neighbors.contains(p)) p.getButton().setDisable(false); });
 
-                    point.makeNeighborsWhite();
+//                    point.makeNeighborsWhite();
 
                 }
 
@@ -111,30 +156,6 @@ public class Field extends Application {
     }
 
 
-    private void setColumns(GridPane gridPane, int w) {
-
-        for (int i = 0; i < w; i++) {
-            if(i % 2 != 0) {
-                gridPane.getColumnConstraints().add(new ColumnConstraints(100));
-            }
-            else {
-                gridPane.getColumnConstraints().add(new ColumnConstraints(20));
-            }
-        }
-    }
-
-    private void setRows(GridPane gridPane, int h) {
-
-        for (int i = 0; i < h; i++) {
-            if(i % 2 != 0) {
-                gridPane.getRowConstraints().add(new RowConstraints(100));
-            }
-            else {
-                gridPane.getRowConstraints().add(new RowConstraints(20));
-            }
-        }
-
-    }
 
     public ToggleButton createButton() {
 
@@ -150,9 +171,16 @@ public class Field extends Application {
 
     }
 
-    public ArrayList<Point> setPoints(GridPane gridPane, int h, int w) {
 
-        ArrayList<Point> list = new ArrayList<>();
+//    private void setNeighborsWithButton(ArrayList<PointWithButton> pointWithButtons) {
+//
+//
+//
+//    }
+
+    public ArrayList<Point> setPoints(GridPane gridPane, ArrayList<PointWithButton> pointWithButtons,  int h, int w) {
+
+        ArrayList<Point> points = new ArrayList<>();
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
@@ -161,15 +189,20 @@ public class Field extends Application {
                     ToggleButton button = createButton();
 
                     gridPane.add(button, i, j);
-                    list.add(new Point(button, i, j));
+
+                    Point point = new Point(i, j);
+
+                    points.add(point);
+
+                    pointWithButtons.add(new PointWithButton(button, point));
 
                 }
             }
         }
 
-//        Main.game.setPoints(list);
+        Main.game.setPoints(points);
 
-        return list;
+        return points;
 
     }
 
@@ -255,6 +288,32 @@ public class Field extends Application {
             });
 
         });
+
+    }
+
+
+    private void setColumns(GridPane gridPane, int w) {
+
+        for (int i = 0; i < w; i++) {
+            if(i % 2 != 0) {
+                gridPane.getColumnConstraints().add(new ColumnConstraints(100));
+            }
+            else {
+                gridPane.getColumnConstraints().add(new ColumnConstraints(20));
+            }
+        }
+    }
+
+    private void setRows(GridPane gridPane, int h) {
+
+        for (int i = 0; i < h; i++) {
+            if(i % 2 != 0) {
+                gridPane.getRowConstraints().add(new RowConstraints(100));
+            }
+            else {
+                gridPane.getRowConstraints().add(new RowConstraints(20));
+            }
+        }
 
     }
 
