@@ -10,8 +10,16 @@ public class MyLine {
     private Point p1;
     private Point p2;
 
+    private boolean isOnField = false;
+
     public MyLine() {
 
+    }
+
+    public MyLine(LinePosition position, int x, int y) {
+        this.position = position;
+        this.x = x;
+        this.y = y;
     }
 
     public MyLine(int x, int y) {
@@ -86,5 +94,20 @@ public class MyLine {
 
     public void setP2(Point p2) {
         this.p2 = p2;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        MyLine line = (MyLine) o;
+
+        return line.x == x && line.y == y;
+    }
+
+    public boolean isOnField() {
+        return isOnField;
+    }
+
+    public void setOnField(boolean onField) {
+        isOnField = onField;
     }
 }
