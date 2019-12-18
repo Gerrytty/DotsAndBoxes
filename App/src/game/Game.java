@@ -9,13 +9,13 @@ public class Game {
     private int width;
 
     private ArrayList<Point> points;
-//    private ArrayList<Line> lines;
-//    private ArrayList<Square> squares;
+    private ArrayList<Line> lines;
+    private ArrayList<Square> squares;
 
     public Game() {
         points = new ArrayList<>();
-//        lines = new ArrayList<>();
-//        squares = new ArrayList<>();
+        lines = new ArrayList<>();
+        squares = new ArrayList<>();
     }
 
     public Game(Mode mode) {
@@ -53,22 +53,22 @@ public class Game {
     public void setPoints(ArrayList<Point> points) {
         this.points = points;
     }
-//
-//    public ArrayList<Line> getLines() {
-//        return lines;
-//    }
-//
-//    public void setLines(ArrayList<Line> lines) {
-//        this.lines = lines;
-//    }
-//
-//    public ArrayList<Square> getSquares() {
-//        return squares;
-//    }
-//
-//    public void setSquares(ArrayList<Square> squares) {
-//        this.squares = squares;
-//    }
+
+    public ArrayList<Line> getLines() {
+        return lines;
+    }
+
+    public void setLines(ArrayList<Line> lines) {
+        this.lines = lines;
+    }
+
+    public ArrayList<Square> getSquares() {
+        return squares;
+    }
+
+    public void setSquares(ArrayList<Square> squares) {
+        this.squares = squares;
+    }
 
 
 }
