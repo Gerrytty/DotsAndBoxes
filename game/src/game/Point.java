@@ -11,10 +11,10 @@ public class Point {
 
     private boolean isWaiting;
 
-    private ArrayList<Point> neighbors;
+//    private ArrayList<Point> neighbors;
 
     public Point() {
-        neighbors = new ArrayList<>();
+        // neighbors = new ArrayList<>();
     }
 
     public Point(int x, int y) {
@@ -55,17 +55,17 @@ public class Point {
         isWaiting = waiting;
     }
 
-    public ArrayList<Point> getNeighbors() {
-        return neighbors;
-    }
-
-    public void setNeighbors(ArrayList<Point> neighbor) {
-        this.neighbors = neighbor;
-    }
-
-    public void addNeighbor(Point point) {
-        neighbors.add(point);
-    }
+//    public ArrayList<Point> getNeighbors() {
+//        return neighbors;
+//    }
+//
+//    public void setNeighbors(ArrayList<Point> neighbor) {
+//        this.neighbors = neighbor;
+//    }
+//
+//    public void addNeighbor(Point point) {
+//        neighbors.add(point);
+//    }
 
     @Override
     public boolean equals(Object o) {

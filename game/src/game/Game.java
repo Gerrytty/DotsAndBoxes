@@ -8,6 +8,8 @@ public class Game {
     private int height;
     private int width;
 
+    private Player player;
+
     private ArrayList<Point> points;
     private ArrayList<MyLine> lines;
 //    private ArrayList<Square> squares;
@@ -71,5 +73,11 @@ public class Game {
         lines.remove(line);
     }
 
+    public Player getPlayer() {
+        return player;
+    }
 
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
 }

@@ -1,5 +1,9 @@
 package server;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import game.Game;
+import game.MyLine;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,6 +40,7 @@ public class MultiClientServer {
     }
 
     private class ClientHandler extends Thread {
+
         private Socket clientSocket;
         private BufferedReader reader;
 
@@ -50,13 +55,17 @@ public class MultiClientServer {
 
             System.out.println("in run");
 
+            ObjectMapper mapper = new ObjectMapper();
+
             try {
                 reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
                 String line;
                 while ((line = reader.readLine()) != null) {
 
-                    System.out.println(line);
+                    ArrayList<MyLine> list = mapper.readValue(line, Game.class).getLines();
+
+                    System.out.println(list.size());
 
                     for (ClientHandler client : clients) {
                         PrintWriter writer = new PrintWriter(

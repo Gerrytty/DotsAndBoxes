@@ -1,9 +1,7 @@
 package display.windows;
 
-import game.LinePosition;
-import game.MyLine;
-import game.Point;
-import game.Square;
+import client.Client;
+import game.*;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -16,6 +14,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import utills.JSON;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +36,6 @@ public class Field extends Application {
 
         stage.show();
 
-
     }
 
     private GridPane generateField(int height, int width) {
@@ -55,15 +53,19 @@ public class Field extends Application {
         setRows(gridPane, h);
 
         ArrayList<Point> points = setPoints(h, w);
-        setNeighbors(points);
 
+        HashMap<Point, ArrayList<Point>> pointAndNeighbors = setNeighbors(points);
         HashMap<Point, ToggleButton> pointToButton = setButtons(gridPane, points);
 
         ArrayList<MyLine> listOfAllLines = initAllLines(h, w);
+
+        Main.game.setLines(listOfAllLines);
+
+        System.out.println("1" + " " + listOfAllLines.size());
+
         ArrayList<Square> squares = initAllSquares(h, w);
 
         setActions(gridPane, listOfAllLines, squares, pointToButton);
-
 
         return gridPane;
     }
@@ -142,17 +144,19 @@ public class Field extends Application {
     private void setActions(GridPane gridPane, ArrayList<MyLine> allLines,
                             ArrayList<Square> squares, HashMap<Point, ToggleButton> map) {
 
+        System.out.println("2 " + Main.game.getLines().size());
+
         map.forEach((point, toggleButton) -> toggleButton.setOnAction(event -> {
 
-            ArrayList<Point> neighbors = point.getNeighbors();
-
-            neighbors.forEach(neighbor -> map.forEach((point1, toggleButton1) -> {
-
-                if(point1.equals(neighbor)) {
-                    makeGreen(toggleButton1);
-                }
-
-            }));
+            // TODO
+//            ArrayList<Point> neighbors = point.getNeighbors();
+//            neighbors.forEach(neighbor -> map.forEach((point1, toggleButton1) -> {
+//
+//                if(point1.equals(neighbor)) {
+//                    makeGreen(toggleButton1);
+//                }
+//
+//            }));
 
             point.setWaiting(true);
 
@@ -168,16 +172,19 @@ public class Field extends Application {
 
             if(waitingPoints.size() == 2) {
                 System.out.println("Drawing line");
+                System.out.println("3 " + allLines.size());
                 drawLine(gridPane, allLines, squares, waitingPoints.get(0), waitingPoints.get(1));
                 waitingPoints.get(0).setWaiting(false);
                 waitingPoints.get(1).setWaiting(false);
             }
 
-            else if(waitingPoints.size() > 2) {
-                System.out.println("Fix this");
-            }
-
         }));
+
+        System.out.println("4 " + Main.game.getLines().size());
+
+        String s = new JSON<Game>().createJSON(Main.game);
+
+        Client.sendMessage(s);
 
     }
 
@@ -190,6 +197,11 @@ public class Field extends Application {
             if(line.equals(myLine)) {
                 line.setOnField(true);
                 System.out.println("Line set of field = true");
+                squares.forEach(square -> square.getLines().forEach(l -> {
+                    if(l.equals(line)) {
+                        l.setOnField(true);
+                    }
+                }));
             }
         });
 
@@ -216,17 +228,33 @@ public class Field extends Application {
         squares.forEach(square -> {
             if(square.isSet()) {
                 System.out.println("Square is set");
-                gridPane.add(new Text("A"), square.getX(), square.getY());
+                square.setLetter("A");
+                gridPane.add(setText("A"), square.getX(), square.getY());
             }
         });
+
+        System.out.println("5 " + allLines.size());
     }
 
-    private void setNeighbors(ArrayList<Point> list) {
+    private Text setText(String letter) {
+        Text text = new Text(letter);
+        text.setTranslateX(30);
+        text.setFill(Color.WHITE);
+        text.setStyle("-fx-font-size: 60px;");
+
+        return text;
+    }
+
+    private  HashMap<Point, ArrayList<Point>> setNeighbors(ArrayList<Point> list) {
+
+        HashMap<Point, ArrayList<Point>> map = new HashMap<>();
 
         list.forEach(point -> {
 
             int x = point.getX();
             int y = point.getY();
+
+            ArrayList<Point> neighbors = new ArrayList<>();
 
             list.forEach(anotherPoint -> {
 
@@ -236,13 +264,17 @@ public class Field extends Application {
                 if ((x1 == x && y1 == y - 2) || (x1 == x + 2 && y1 == y) ||
                         (x1 == x && y1 == y + 2) || (x1 == x - 2 && y1 == y)) {
 
-                    point.addNeighbor(anotherPoint);
+                    neighbors.add(anotherPoint);
 
                 }
 
             });
 
+            map.put(point, neighbors);
+
         });
+
+        return map;
 
     }
 

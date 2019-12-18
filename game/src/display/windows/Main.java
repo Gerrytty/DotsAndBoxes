@@ -23,6 +23,8 @@ public class Main extends Application {
         String ip = "127.0.0.1";
         int port = 7000;
 
+        game.setPlayer(new Player());
+
         Client.startConnection(ip, port);
 
         launch(args);
