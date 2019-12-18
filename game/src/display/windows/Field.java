@@ -3,6 +3,7 @@ package display.windows;
 import game.LinePosition;
 import game.MyLine;
 import game.Point;
+import game.Square;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -13,6 +14,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -57,7 +59,11 @@ public class Field extends Application {
 
         HashMap<Point, ToggleButton> pointToButton = setButtons(gridPane, points);
 
-        setActions(gridPane, pointToButton);
+        ArrayList<MyLine> listOfAllLines = initAllLines(h, w);
+        ArrayList<Square> squares = initAllSquares(h, w);
+
+        setActions(gridPane, listOfAllLines, squares, pointToButton);
+
 
         return gridPane;
     }
@@ -133,7 +139,8 @@ public class Field extends Application {
         return buttons;
     }
 
-    private void setActions(GridPane gridPane, HashMap<Point, ToggleButton> map) {
+    private void setActions(GridPane gridPane, ArrayList<MyLine> allLines,
+                            ArrayList<Square> squares, HashMap<Point, ToggleButton> map) {
 
         map.forEach((point, toggleButton) -> toggleButton.setOnAction(event -> {
 
@@ -161,7 +168,7 @@ public class Field extends Application {
 
             if(waitingPoints.size() == 2) {
                 System.out.println("Drawing line");
-                drawLine(gridPane, waitingPoints.get(0), waitingPoints.get(1));
+                drawLine(gridPane, allLines, squares, waitingPoints.get(0), waitingPoints.get(1));
                 waitingPoints.get(0).setWaiting(false);
                 waitingPoints.get(1).setWaiting(false);
             }
@@ -174,9 +181,17 @@ public class Field extends Application {
 
     }
 
-    private void drawLine(GridPane gridPane, Point p1, Point p2) {
+    private void drawLine(GridPane gridPane, ArrayList<MyLine> allLines,
+                          ArrayList<Square> squares, Point p1, Point p2) {
 
         MyLine myLine = new MyLine(p1, p2);
+
+        allLines.forEach(line -> {
+            if(line.equals(myLine)) {
+                line.setOnField(true);
+                System.out.println("Line set of field = true");
+            }
+        });
 
         Line line = new Line();
         line.setStrokeWidth(5);
@@ -197,6 +212,13 @@ public class Field extends Application {
         }
 
         gridPane.add(line, myLine.getX(), myLine.getY());
+
+        squares.forEach(square -> {
+            if(square.isSet()) {
+                System.out.println("Square is set");
+                gridPane.add(new Text("A"), square.getX(), square.getY());
+            }
+        });
     }
 
     private void setNeighbors(ArrayList<Point> list) {
@@ -224,11 +246,48 @@ public class Field extends Application {
 
     }
 
-    public void makeGreen(ToggleButton button) {
+    private ArrayList<MyLine> initAllLines(int h, int w) {
+
+        ArrayList<MyLine> lines = new ArrayList<>();
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+
+                if(i % 2 != 0 && j % 2 == 0) {
+                    lines.add(new MyLine(LinePosition.HORIZONTAL, i, j));
+                }
+                else if(i % 2 == 0 && j % 2 != 0) {
+
+                    lines.add(new MyLine(LinePosition.VERTICAL, i, j));
+
+                }
+            }
+        }
+
+        return lines;
+    }
+
+    private ArrayList<Square> initAllSquares(int h, int w) {
+        ArrayList<Square> squares = new ArrayList<>();
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                if(i % 2 != 0 && j % 2 != 0) {
+                    Square square = new Square(i, j);
+                    square.initLines();
+                    squares.add(square);
+                }
+            }
+        }
+
+        return squares;
+    }
+
+    private void makeGreen(ToggleButton button) {
         button.setStyle("-fx-base: #31c318");
     }
 
-    public void makeWhite(ToggleButton button) {
+    private void makeWhite(ToggleButton button) {
         button.setStyle("-fx-base: #ffffff");
     }
 
