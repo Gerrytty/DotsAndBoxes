@@ -29,4 +29,9 @@ public class Computer {
     public void removeLine(int number) {
         allLines.remove(number);
     }
+
+    public String getLetter() {
+        return "C";
+    }
+
 }

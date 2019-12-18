@@ -20,6 +20,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Field extends Application {
+    private static Field field;
+    private static boolean isVisible = true;
+
+    private Field() {
+
+    }
+
+    public static Field getField() {
+        if(field == null) {
+            field = new Field();
+        }
+
+        return field;
+    }
 
     @Override
     public void start(Stage stage) {
@@ -60,8 +74,6 @@ public class Field extends Application {
         ArrayList<MyLine> listOfAllLines = initAllLines(h, w);
 
         Main.game.setLines(listOfAllLines);
-
-        System.out.println("1" + " " + listOfAllLines.size());
 
         ArrayList<Square> squares = initAllSquares(h, w);
 
@@ -144,8 +156,6 @@ public class Field extends Application {
     private void setActions(GridPane gridPane, ArrayList<MyLine> allLines,
                             ArrayList<Square> squares, HashMap<Point, ToggleButton> map) {
 
-        System.out.println("2 " + Main.game.getLines().size());
-
         map.forEach((point, toggleButton) -> toggleButton.setOnAction(event -> {
 
             // TODO
@@ -158,33 +168,37 @@ public class Field extends Application {
 //
 //            }));
 
-            point.setWaiting(true);
+            if(isVisible) {
+                point.setWaiting(true);
 
-            ArrayList<Point> waitingPoints = new ArrayList<>();
+                ArrayList<Point> waitingPoints = new ArrayList<>();
 
-            map.forEach((waitingPoint, button) -> {
+                map.forEach((waitingPoint, button) -> {
 
-                if(waitingPoint.isWaiting()) {
-                    waitingPoints.add(waitingPoint);
+                    if(waitingPoint.isWaiting()) {
+                        waitingPoints.add(waitingPoint);
+                    }
+                });
+
+
+                if(waitingPoints.size() == 2) {
+                    System.out.println("Drawing line");
+                    drawLine(gridPane, allLines, squares, waitingPoints.get(0), waitingPoints.get(1));
+                    waitingPoints.get(0).setWaiting(false);
+                    waitingPoints.get(1).setWaiting(false);
+                    isVisible = false;
+
+                    String s = new JSON<Game>().createJSON(Main.game);
+
+                    Client.sendMessage(s);
                 }
-            });
+            }
 
-
-            if(waitingPoints.size() == 2) {
-                System.out.println("Drawing line");
-                System.out.println("3 " + allLines.size());
-                drawLine(gridPane, allLines, squares, waitingPoints.get(0), waitingPoints.get(1));
-                waitingPoints.get(0).setWaiting(false);
-                waitingPoints.get(1).setWaiting(false);
+            else {
+                System.out.println("Computer move");
             }
 
         }));
-
-        System.out.println("4 " + Main.game.getLines().size());
-
-        String s = new JSON<Game>().createJSON(Main.game);
-
-        Client.sendMessage(s);
 
     }
 
@@ -228,12 +242,11 @@ public class Field extends Application {
         squares.forEach(square -> {
             if(square.isSet()) {
                 System.out.println("Square is set");
-                square.setLetter("A");
-                gridPane.add(setText("A"), square.getX(), square.getY());
+                square.setLetter(Main.game.getPlayer().getLetter());
+                gridPane.add(setText(square.getLetter()), square.getX(), square.getY());
             }
         });
 
-        System.out.println("5 " + allLines.size());
     }
 
     private Text setText(String letter) {
@@ -323,4 +336,7 @@ public class Field extends Application {
         button.setStyle("-fx-base: #ffffff");
     }
 
+    public static void setIsVisible(boolean isVisible) {
+        Field.isVisible = isVisible;
+    }
 }

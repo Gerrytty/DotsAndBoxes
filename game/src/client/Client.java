@@ -1,5 +1,7 @@
 package client;
 
+import display.windows.Field;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -49,7 +51,8 @@ public class Client {
             while (true) {
                 try {
                     String message = reader.readLine();
-                    System.out.println(message);
+                    System.out.println("Message from server = " + message);
+                    Field.setIsVisible(true);
                 } catch (IOException e) {
                     throw new IllegalStateException(e);
                 }

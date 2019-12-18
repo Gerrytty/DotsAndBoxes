@@ -57,7 +57,7 @@ public class SinglePlay extends Application {
             game.setWidth(Integer.parseInt(strings[0]));
 
             try {
-                new Field().start(stage);
+                Field.getField().start(stage);
             } catch (Exception e) {
                 e.printStackTrace();
             }

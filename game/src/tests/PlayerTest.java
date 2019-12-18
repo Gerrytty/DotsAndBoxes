@@ -3,6 +3,7 @@ package tests;
 import game.Player;
 import org.junit.Assert;
 import org.junit.Test;
+import server.Computer;
 
 public class PlayerTest {
 
@@ -20,5 +21,11 @@ public class PlayerTest {
         Player player = new Player();
         player.addPoint();
         Assert.assertEquals(player.getPoints(), 1);
+    }
+
+    @Test
+    public void computerTest() {
+        Computer computer = new Computer();
+        Assert.assertEquals(computer.getLetter(), "C");
     }
 }

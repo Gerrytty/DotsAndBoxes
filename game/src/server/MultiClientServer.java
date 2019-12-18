@@ -1,8 +1,10 @@
 package server;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import game.Game;
 import game.MyLine;
+import utills.JSON;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,6 +14,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MultiClientServer {
 
@@ -63,22 +66,41 @@ public class MultiClientServer {
                 String line;
                 while ((line = reader.readLine()) != null) {
 
-                    ArrayList<MyLine> list = mapper.readValue(line, Game.class).getLines();
+                    Move move = getMove(mapper, line);
 
-                    System.out.println(list.size());
+                    JSON<Move> json = new JSON<>();
 
                     for (ClientHandler client : clients) {
                         PrintWriter writer = new PrintWriter(
                                 client.clientSocket.getOutputStream(), true);
-                        writer.println(line);
+                        writer.println(json.createJSON(move));
                     }
+                    System.out.println("Client message = " + line + "\n");
+                    System.out.println("Server message = " + json.createJSON(move) + "\n");
                 }
+
 
                 reader.close();
                 clientSocket.close();
             } catch (IOException e) {
                 throw new IllegalStateException(e);
             }
+        }
+
+        private Move getMove(ObjectMapper mapper, String s) {
+            Move move = new Move();
+            Game game = null;
+            try {
+                game = mapper.readValue(s, Game.class);
+                ArrayList<MyLine> lines = game.getLines();
+                MyLine line = lines.get(new Random().nextInt(lines.size()));
+                move.setLine(line);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+
+
+            return move;
         }
 
     }
