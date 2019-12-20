@@ -51,6 +51,11 @@ public class Client {
             while (true) {
                 try {
                     String message = reader.readLine();
+
+                    if(message == null) {
+                        System.exit(0);
+                    }
+
                     System.out.println("Message from server = " + message);
                     Field.setIsVisible(true);
                 } catch (IOException e) {

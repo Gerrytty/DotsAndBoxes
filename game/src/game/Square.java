@@ -2,7 +2,7 @@ package game;
 
 import java.util.ArrayList;
 
-public class Square {
+public class Square implements Comparable<Square> {
 
     private int x;
     private int y;
@@ -73,5 +73,32 @@ public class Square {
     public boolean equals(Object o) {
         Square square = (Square) o;
         return square.x == x && square.y == y;
+    }
+
+    private int countLinesOnField() {
+
+        final int[] c = {0};
+
+        lines.forEach(line -> {
+            if(line.isOnField()) {
+                c[0]++;
+            }
+        });
+
+        return c[0];
+    }
+
+    @Override
+    public int compareTo(Square square) {
+
+        if(countLinesOnField() == 2 && square.countLinesOnField() ==  1) {
+            return -1;
+        }
+
+        if(countLinesOnField() == 1 && square.countLinesOnField() == 2) {
+            return 1;
+        }
+
+        return countLinesOnField() - square.countLinesOnField();
     }
 }

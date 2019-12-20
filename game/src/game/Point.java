@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Point {
 
@@ -55,17 +56,38 @@ public class Point {
         isWaiting = waiting;
     }
 
-//    public ArrayList<Point> getNeighbors() {
-//        return neighbors;
-//    }
-//
-//    public void setNeighbors(ArrayList<Point> neighbor) {
-//        this.neighbors = neighbor;
-//    }
-//
-//    public void addNeighbor(Point point) {
-//        neighbors.add(point);
-//    }
+    public HashMap<Point, ArrayList<Point>> setNeighbors(ArrayList<Point> list) {
+
+        HashMap<Point, ArrayList<Point>> map = new HashMap<>();
+
+        list.forEach(point -> {
+
+            int x = point.getX();
+            int y = point.getY();
+
+            ArrayList<Point> neighbors = new ArrayList<>();
+
+            list.forEach(anotherPoint -> {
+
+                int x1 = anotherPoint.getX();
+                int y1 = anotherPoint.getY();
+
+                if ((x1 == x && y1 == y - 2) || (x1 == x + 2 && y1 == y) ||
+                        (x1 == x && y1 == y + 2) || (x1 == x - 2 && y1 == y)) {
+
+                    neighbors.add(anotherPoint);
+
+                }
+
+            });
+
+            map.put(point, neighbors);
+
+        });
+
+        return map;
+
+    }
 
     @Override
     public boolean equals(Object o) {

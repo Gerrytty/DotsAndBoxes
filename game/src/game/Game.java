@@ -12,12 +12,12 @@ public class Game {
 
     private ArrayList<Point> points;
     private ArrayList<MyLine> lines;
-//    private ArrayList<Square> squares;
+    private ArrayList<Square> squares;
 
     public Game() {
         points = new ArrayList<>();
         lines = new ArrayList<>();
-//        squares = new ArrayList<>();
+        squares = new ArrayList<>();
     }
 
     public Game(Mode mode) {
@@ -79,5 +79,13 @@ public class Game {
 
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    public ArrayList<Square> getSquares() {
+        return squares;
+    }
+
+    public void setSquares(ArrayList<Square> squares) {
+        this.squares = squares;
     }
 }

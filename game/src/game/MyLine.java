@@ -1,5 +1,7 @@
 package game;
 
+import java.util.ArrayList;
+
 public class MyLine {
 
     private int x;
@@ -109,5 +111,26 @@ public class MyLine {
 
     public void setOnField(boolean onField) {
         isOnField = onField;
+    }
+
+    public ArrayList<MyLine> initAllLines(int h, int w) {
+
+        ArrayList<MyLine> lines = new ArrayList<>();
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+
+                if(i % 2 != 0 && j % 2 == 0) {
+                    lines.add(new MyLine(LinePosition.HORIZONTAL, i, j));
+                }
+                else if(i % 2 == 0 && j % 2 != 0) {
+
+                    lines.add(new MyLine(LinePosition.VERTICAL, i, j));
+
+                }
+            }
+        }
+
+        return lines;
     }
 }
