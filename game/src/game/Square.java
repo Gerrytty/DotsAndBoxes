@@ -9,10 +9,12 @@ public class Square implements Comparable<Square> {
 
     private String letter = "";
 
+    private boolean set;
+
     private ArrayList<MyLine> lines;
 
-
     public Square() {
+
         lines = new ArrayList<>();
     }
 
@@ -58,6 +60,7 @@ public class Square implements Comparable<Square> {
     }
 
     public boolean isSet() {
+        this.set = true;
         return lines.stream().allMatch(MyLine::isOnField);
     }
 
@@ -75,7 +78,7 @@ public class Square implements Comparable<Square> {
         return square.x == x && square.y == y;
     }
 
-    private int countLinesOnField() {
+    public int countLinesOnField() {
 
         final int[] c = {0};
 

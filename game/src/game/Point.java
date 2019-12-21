@@ -12,10 +12,8 @@ public class Point {
 
     private boolean isWaiting;
 
-//    private ArrayList<Point> neighbors;
-
     public Point() {
-        // neighbors = new ArrayList<>();
+
     }
 
     public Point(int x, int y) {

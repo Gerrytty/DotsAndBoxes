@@ -2,6 +2,7 @@ package server;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import display.windows.Field;
 import game.Game;
 import game.MyLine;
 import game.Square;
@@ -15,6 +16,7 @@ import java.lang.reflect.Array;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -91,12 +93,16 @@ public class MultiClientServer {
 
         private Move getMove(ObjectMapper mapper, String s) {
             Move move = new Move();
-            Game game = null;
             try {
-                game = mapper.readValue(s, Game.class);
+
+                Game game = mapper.readValue(s, Game.class);
+
                 ArrayList<MyLine> lines = game.getLines();
                 MyLine line = lines.get(new Random().nextInt(lines.size()));
                 move.setLine(line);
+                move.setLines(game.getLines());
+                move.setSquares(game.getSquares());
+
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }

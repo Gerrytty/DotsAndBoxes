@@ -1,6 +1,9 @@
 package client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import display.windows.Field;
+import javafx.application.Platform;
+import server.Move;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -57,7 +60,17 @@ public class Client {
                     }
 
                     System.out.println("Message from server = " + message);
-                    Field.setIsVisible(true);
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    Move move = objectMapper.readValue(message, Move.class);
+                    Field.setLineFromServer(move.getLine());
+
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            Field.drawLine(move.getLines(), move.getSquares(), move.getLine());
+                        }
+                    });
+
                 } catch (IOException e) {
                     throw new IllegalStateException(e);
                 }
