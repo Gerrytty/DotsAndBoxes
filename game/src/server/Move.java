@@ -9,6 +9,8 @@ public class Move {
     private ArrayList<MyLine> lines;
     private ArrayList<Square> squares;
 
+    private boolean isGameOver = false;
+
     public Move() {
 
     }
@@ -41,5 +43,13 @@ public class Move {
 
     public void setLines(ArrayList<MyLine> lines) {
         this.lines = lines;
+    }
+
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        isGameOver = gameOver;
     }
 }

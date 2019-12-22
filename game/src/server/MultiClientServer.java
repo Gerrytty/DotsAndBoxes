@@ -79,8 +79,8 @@ public class MultiClientServer {
                                 client.clientSocket.getOutputStream(), true);
                         writer.println(json.createJSON(move));
                     }
-                    System.out.println("Client message = " + line + "\n");
-                    System.out.println("Server message = " + json.createJSON(move) + "\n");
+//                    System.out.println("Client message = " + line + "\n");
+//                    System.out.println("Server message = " + json.createJSON(move) + "\n");
                 }
 
 
@@ -98,10 +98,18 @@ public class MultiClientServer {
                 Game game = mapper.readValue(s, Game.class);
 
                 ArrayList<MyLine> lines = game.getLines();
-                MyLine line = lines.get(new Random().nextInt(lines.size()));
-                move.setLine(line);
-                move.setLines(game.getLines());
-                move.setSquares(game.getSquares());
+
+                int size = lines.size();
+
+                if(size > 0) {
+                    MyLine line = lines.get(new Random().nextInt(size));
+                    move.setLine(line);
+                }
+                else {
+                    System.out.println("Game over");
+                    move.setGameOver(true);
+                }
+
 
             } catch (JsonProcessingException e) {
                 e.printStackTrace();

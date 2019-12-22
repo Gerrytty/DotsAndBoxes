@@ -23,12 +23,16 @@ import java.util.HashMap;
 public class Field extends Application {
 
     private static Field field;
-    private static boolean isVisible = true;
     private static GridPane grid;
+    private static Stage fieldStage;
 
-    private static MyLine lineFromServer;
+    private static ArrayList<MyLine> freeLinesOnField;
 
-    private ArrayList<MyLine> freeLinesOnField;
+    private static ArrayList<MyLine> allLines;
+    private static ArrayList<Square> allSquares;
+
+    private static int playerScore = 0;
+    private static int computerScore = 0;
 
     private Field() {
         grid = new GridPane();
@@ -44,6 +48,7 @@ public class Field extends Application {
 
     @Override
     public void start(Stage stage) {
+        fieldStage = stage;
 
         generateField(Main.game.getHeight(), Main.game.getWidth());
 
@@ -80,12 +85,14 @@ public class Field extends Application {
 
         ArrayList<MyLine> listOfAllLines = new MyLine().initAllLines(h, w);
         freeLinesOnField = listOfAllLines;
+        allLines = listOfAllLines;
 
         Main.game.setLines(freeLinesOnField);
 
         ArrayList<Square> squares = initAllSquares(h, w);
+        allSquares = squares;
 
-        setActions(listOfAllLines, squares, pointToButton);
+        setActions(pointToButton);
 
     }
 
@@ -132,7 +139,6 @@ public class Field extends Application {
 
     }
 
-
     private ToggleButton createButton() {
 
         ToggleButton button = new ToggleButton();
@@ -160,10 +166,7 @@ public class Field extends Application {
         return buttons;
     }
 
-    private void setActions(ArrayList<MyLine> allLines,
-                            ArrayList<Square> squares, HashMap<Point, ToggleButton> map) {
-
-        System.out.println(squares.size());
+    private void setActions(HashMap<Point, ToggleButton> map) {
 
         map.forEach((point, toggleButton) -> toggleButton.setOnAction(event -> {
 
@@ -180,31 +183,16 @@ public class Field extends Application {
 
 
             if(waitingPoints.size() == 2) {
-                System.out.println("Player drawing line");
 
                 MyLine myLine = new MyLine(waitingPoints.get(0), waitingPoints.get(1));
 
-                drawLine(allLines, squares, myLine);
+                drawLine(myLine, "A");
                 waitingPoints.get(0).setWaiting(false);
                 waitingPoints.get(1).setWaiting(false);
-                isVisible = false;
 
-                freeLinesOnField.remove(myLine);
                 Main.game.setLines(freeLinesOnField);
-
                 String s = new JSON<Game>().createJSON(Main.game);
                 Client.sendMessage(s);
-
-                if(lineFromServer != null) {
-                    System.out.println("Computer will drawing");
-                    drawLine(allLines, squares, lineFromServer);
-                    lineFromServer = null;
-                }
-                else {
-                    System.out.println("too long");
-                }
-
-                isVisible = true;
 
             }
 
@@ -212,14 +200,20 @@ public class Field extends Application {
 
     }
 
-    public static void drawLine(ArrayList<MyLine> allLines,
-                          ArrayList<Square> squares, MyLine myLine) {
+    public static void drawLine(MyLine myLine, String letter) {
+
+        if(letter.equals("A")) {
+            System.out.println("Payer");
+        }
+        else {
+            System.out.println("Computer");
+        }
 
         allLines.forEach(line -> {
             if(line.equals(myLine)) {
                 line.setOnField(true);
-                System.out.println("Line set of field = true");
-                squares.forEach(square -> square.getLines().forEach(l -> {
+
+                allSquares.forEach(square -> square.getLines().forEach(l -> {
                     if(l.equals(line)) {
                         l.setOnField(true);
                     }
@@ -248,13 +242,28 @@ public class Field extends Application {
 
         grid.add(line, myLine.getX(), myLine.getY());
 
-        squares.forEach(square -> {
+        final Square[] mySquare = {null};
+
+        allSquares.forEach(square -> {
             if(square.isSet()) {
                 System.out.println("Square is set");
-                square.setLetter(Main.game.getPlayer().getLetter());
+                square.setLetter(letter);
                 grid.add(createText(square.getLetter()), square.getX(), square.getY());
+                mySquare[0] = square;
+                if(letter.equals("A")) {
+                    playerScore++;
+                }
+                else {
+                    computerScore++;
+                }
             }
         });
+
+        if(mySquare[0] != null) {
+            allSquares.remove(mySquare[0]);
+        }
+
+        freeLinesOnField.remove(myLine);
 
     }
 
@@ -265,10 +274,6 @@ public class Field extends Application {
         text.setStyle("-fx-font-size: 60px;");
 
         return text;
-    }
-
-    public static void setIsVisible(boolean isVisible) {
-        Field.isVisible = isVisible;
     }
 
     private ArrayList<Point> setPoints(int h, int w) {
@@ -290,11 +295,15 @@ public class Field extends Application {
 
     }
 
-    public static MyLine getLineFromServer() {
-        return lineFromServer;
+    public static Stage getFieldStage() {
+        return fieldStage;
     }
 
-    public static void setLineFromServer(MyLine line) {
-        lineFromServer = line;
+    public static int getComputerScore() {
+        return computerScore;
+    }
+
+    public static int getPlayerScore() {
+        return playerScore;
     }
 }

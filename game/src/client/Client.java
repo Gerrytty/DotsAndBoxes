@@ -2,6 +2,7 @@ package client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import display.windows.Field;
+import display.windows.SinglePlayGameOver;
 import javafx.application.Platform;
 import server.Move;
 
@@ -56,20 +57,21 @@ public class Client {
                     String message = reader.readLine();
 
                     if(message == null) {
+                        closeConnection();
                         System.exit(0);
                     }
 
-                    System.out.println("Message from server = " + message);
                     ObjectMapper objectMapper = new ObjectMapper();
                     Move move = objectMapper.readValue(message, Move.class);
-                    Field.setLineFromServer(move.getLine());
 
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            Field.drawLine(move.getLines(), move.getSquares(), move.getLine());
-                        }
-                    });
+                    if(!move.isGameOver()) {
+                        Platform.runLater(() -> Field.drawLine(move.getLine(), "C"));
+                    }
+
+                    else {
+                        System.out.println("Game over");
+                        Platform.runLater(() -> new SinglePlayGameOver().start(Field.getFieldStage()));
+                    }
 
                 } catch (IOException e) {
                     throw new IllegalStateException(e);
