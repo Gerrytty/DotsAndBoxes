@@ -1,5 +1,6 @@
 package server;
 
+import client.PlayerMove;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import game.Game;
 import game.Mode;
@@ -20,6 +21,8 @@ public class MultiClientServer {
 
     private ServerSocket serverSocket;
     private List<ClientHandler> clients;
+
+    private static int move = 2;
 
     private boolean gameIsStarted = false;
 
@@ -83,19 +86,41 @@ public class MultiClientServer {
                     }
 
                     else {
-                        serverMessage = "new client";
-                        int numberOfClients = clients.size();
-                        System.out.println("Current number of clients = " + numberOfClients);
-                        System.out.println("Should be " + game.getNumberOfPlayers());
 
-                        if(numberOfClients == game.getNumberOfPlayers() && !gameIsStarted) {
-                            serverMessage = "start";
+                        int numberOfClients = game.getNumberOfPlayers();
+                        serverMessage = "";
+
+                        if(numberOfClients != clients.size()) {
+                            System.out.println("Current number of clients = " + clients.size());
+                            System.out.println("Should be = " + numberOfClients);
+
+                            serverMessage = "new client with number " + clients.size();
+                        }
+
+                        if(numberOfClients == clients.size() && !gameIsStarted) {
+                            System.out.println("All players");
+                            serverMessage = "start game " + clients.size();
                             gameIsStarted = true;
                         }
 
-                        else {
-                            System.out.println("Game in process or little players");
+                        else if(gameIsStarted) {
+                            System.out.println("Move = " + move);
+
+                            PlayerMove playerMove = game.getPlayerMove();
+
+                            int whoMoveNow = move <= numberOfClients ? move : (move % numberOfClients) == 0 ?
+                                    clients.size() : move % numberOfClients;
+
+                            playerMove.setWhoMove(whoMoveNow);
+                            playerMove.setPastMove(whoMoveNow - 1);
+
+                            System.out.println("Now move player = " + whoMoveNow);
+
+                            serverMessage = new JSON<PlayerMove>().createJSON(playerMove);
+
+                            move++;
                         }
+
                     }
 
                     for (ClientHandler client : clients) {

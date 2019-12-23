@@ -1,5 +1,7 @@
 package game;
 
+import client.PlayerMove;
+
 import java.util.ArrayList;
 
 public class Game {
@@ -16,6 +18,8 @@ public class Game {
     private ArrayList<Square> squares;
 
     private ArrayList<Player> players;
+
+    private PlayerMove playerMove;
 
     public Game() {
         points = new ArrayList<>();
@@ -111,5 +115,13 @@ public class Game {
 
     public void addPlayer(Player player) {
         players.add(player);
+    }
+
+    public PlayerMove getPlayerMove() {
+        return playerMove;
+    }
+
+    public void setPlayerMove(PlayerMove playerMove) {
+        this.playerMove = playerMove;
     }
 }

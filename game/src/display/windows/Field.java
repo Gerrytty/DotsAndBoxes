@@ -1,6 +1,7 @@
 package display.windows;
 
 import client.Client;
+import client.PlayerMove;
 import game.*;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -21,6 +22,10 @@ import java.util.HashMap;
 
 public class Field extends Application {
 
+    private static int playerNumber = 0;
+
+    private static String playerLetter = (char)(playerNumber + 65) + "";
+
     private static Field field;
     private static GridPane grid;
     private static Stage fieldStage;
@@ -32,6 +37,8 @@ public class Field extends Application {
 
     private static int playerScore = 0;
     private static int computerScore = 0;
+
+    private static boolean isMyMove = false;
 
     private static Player player;
 
@@ -47,10 +54,10 @@ public class Field extends Application {
         return field;
     }
 
+    private static HashMap<Point, ToggleButton> map = new HashMap<>();
+
     @Override
     public void start(Stage stage) {
-
-        System.out.println(player.getLetter());
 
         fieldStage = stage;
 
@@ -85,6 +92,11 @@ public class Field extends Application {
         ArrayList<Point> points = setPoints(h, w);
 
         HashMap<Point, ToggleButton> pointToButton = setButtons(grid, points);
+        map = pointToButton;
+
+        if(playerNumber != 0 && playerNumber != 1) {
+            map.forEach((point, button) -> button.setDisable(true));
+        }
 
         ArrayList<MyLine> listOfAllLines = new MyLine().initAllLines(h, w);
         freeLinesOnField = listOfAllLines;
@@ -95,8 +107,12 @@ public class Field extends Application {
         ArrayList<Square> squares = initAllSquares(h, w);
         allSquares = squares;
 
-        setActions(pointToButton);
+        setActions();
 
+    }
+
+    public static void setAllButtonsVisible() {
+        map.forEach((point, button) -> button.setDisable(!isIsMyMove()));
     }
 
     private ArrayList<Square> initAllSquares(int h, int w) {
@@ -169,7 +185,7 @@ public class Field extends Application {
         return buttons;
     }
 
-    private void setActions(HashMap<Point, ToggleButton> map) {
+    private void setActions() {
 
         map.forEach((point, toggleButton) -> toggleButton.setOnAction(event -> {
 
@@ -189,13 +205,24 @@ public class Field extends Application {
 
                 MyLine myLine = new MyLine(waitingPoints.get(0), waitingPoints.get(1));
 
-                drawLine(myLine, player.getLetter());
+                drawLine(myLine, playerLetter, true);
                 waitingPoints.get(0).setWaiting(false);
                 waitingPoints.get(1).setWaiting(false);
 
                 Main.game.setLines(freeLinesOnField);
-                String s = new JSON<Game>().createJSON(Main.game);
-                Client.sendMessage(s);
+
+                if(Main.game.getMode().equals(Mode.SINGLE_PLAY)) {
+                    String s = new JSON<Game>().createJSON(Main.game);
+                    Client.sendMessage(s);
+                }
+
+                else {
+                    PlayerMove playerMove = new PlayerMove();
+                    playerMove.setMyMove(myLine);
+                    Main.game.setPlayerMove(playerMove);
+                    String s = new JSON<Game>().createJSON(Main.game);
+                    Client.sendMessage(s);
+                }
 
             }
 
@@ -203,14 +230,7 @@ public class Field extends Application {
 
     }
 
-    public static void drawLine(MyLine myLine, String letter) {
-
-        if(letter.equals("A")) {
-            System.out.println("Payer");
-        }
-        else {
-            System.out.println("Computer");
-        }
+    public static void drawLine(MyLine myLine, String letter, boolean iDraw) {
 
         allLines.forEach(line -> {
             if(line.equals(myLine)) {
@@ -250,10 +270,15 @@ public class Field extends Application {
         allSquares.forEach(square -> {
             if(square.isSet()) {
                 System.out.println("Square is set");
-                square.setLetter(letter);
+                if(iDraw) {
+                    square.setLetter(playerLetter);
+                }
+                else {
+                    square.setLetter(letter);
+                }
                 grid.add(createText(square.getLetter()), square.getX(), square.getY());
                 mySquare[0] = square;
-                if(letter.equals(player.getLetter())) {
+                if(letter.equals(playerLetter)) {
                     playerScore++;
                 }
                 else {
@@ -317,4 +342,29 @@ public class Field extends Application {
     public static void setPlayer(Player player) {
         Field.player = player;
     }
+
+    public static void setPlayerNumber(int playerNumber) {
+        Field.playerNumber = playerNumber;
+    }
+
+    public String getLetter() {
+        return playerLetter;
+    }
+
+    public static void setLetter(String letter) {
+        Field.playerLetter = letter;
+    }
+
+    public static boolean isIsMyMove() {
+        return isMyMove;
+    }
+
+    public static void setIsMyMove(boolean isMyMove) {
+        Field.isMyMove = isMyMove;
+    }
+
+    public static int getPlayerNumber() {
+        return playerNumber;
+    }
+
 }
