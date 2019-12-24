@@ -112,7 +112,7 @@ public class MultiClientServer {
                                     clients.size() : move % numberOfClients;
 
                             playerMove.setWhoMove(whoMoveNow);
-                            playerMove.setPastMove(whoMoveNow - 1);
+                            playerMove.setPastMove(whoMoveNow == 1 ? clients.size() : whoMoveNow - 1);
 
                             System.out.println("Now move player = " + whoMoveNow);
 

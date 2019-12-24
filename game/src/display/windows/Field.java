@@ -270,12 +270,13 @@ public class Field extends Application {
         allSquares.forEach(square -> {
             if(square.isSet()) {
                 System.out.println("Square is set");
-                if(iDraw) {
-                    square.setLetter(playerLetter);
-                }
-                else {
-                    square.setLetter(letter);
-                }
+//                if(iDraw) {
+//                    square.setLetter(playerLetter);
+//                }
+//                else {
+//                    square.setLetter(letter);
+//                }
+                square.setLetter(letter);
                 grid.add(createText(square.getLetter()), square.getX(), square.getY());
                 mySquare[0] = square;
                 if(letter.equals(playerLetter)) {
