@@ -21,6 +21,8 @@ public class Game {
 
     private PlayerMove playerMove;
 
+    private boolean isGameOver;
+
     public Game() {
         points = new ArrayList<>();
         lines = new ArrayList<>();
@@ -123,5 +125,13 @@ public class Game {
 
     public void setPlayerMove(PlayerMove playerMove) {
         this.playerMove = playerMove;
+    }
+
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        isGameOver = gameOver;
     }
 }

@@ -3,6 +3,7 @@ package client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import display.windows.Field;
 import display.windows.Main;
+import display.windows.MultiPlayerGameOver;
 import display.windows.SinglePlayGameOver;
 import game.Mode;
 import javafx.application.Platform;
@@ -123,7 +124,13 @@ public class Client {
                         }
 
                         if(move == null) {
+
                             PlayerMove playerMove = objectMapper.readValue(message, PlayerMove.class);
+
+                            if(playerMove.isGameOver()) {
+                                Platform.runLater(() -> new MultiPlayerGameOver().start(Main.getMainStage()));
+                            }
+
                             Platform.runLater(() -> {
                                 Field.drawLine(playerMove.getMyMove(), playerMove.getPastLetter(), false);
                                 Field.setIsMyMove(playerMove.getWhoMove() == Field.getPlayerNumber());
@@ -133,6 +140,7 @@ public class Client {
                                 System.out.println(playerNumber);
                                 System.out.println(playerMove.getWhoMoveLetter());
                             });
+
                         }
 
                     }

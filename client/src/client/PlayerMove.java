@@ -2,6 +2,8 @@ package client;
 
 import game.MyLine;
 
+import java.util.HashMap;
+
 public class PlayerMove {
 
     private int whoMove;
@@ -11,6 +13,11 @@ public class PlayerMove {
 
     private String whoMoveLetter;
     private String pastLetter;
+
+    private boolean isGameOver;
+
+    private HashMap<String, Integer> letters;
+    private int countSetSquares;
 
     public PlayerMove() {
 
@@ -56,5 +63,29 @@ public class PlayerMove {
     public void setPastMove(int pastMove) {
         pastLetter = (char)(pastMove + 64) + "";
         this.pastMove = pastMove;
+    }
+
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        isGameOver = gameOver;
+    }
+
+    public HashMap<String, Integer> getLetters() {
+        return letters;
+    }
+
+    public void setLetters(HashMap<String, Integer> letters) {
+        this.letters = letters;
+    }
+
+    public int getCountSetSquares() {
+        return countSetSquares;
+    }
+
+    public void setCountSetSquares(int countSetSquares) {
+        this.countSetSquares = countSetSquares;
     }
 }

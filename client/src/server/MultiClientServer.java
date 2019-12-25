@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -25,6 +26,7 @@ public class MultiClientServer {
     private static int move = 2;
 
     private boolean gameIsStarted = false;
+
 
     public MultiClientServer() {
 
@@ -112,8 +114,13 @@ public class MultiClientServer {
                                     clients.size() : move % numberOfClients;
 
                             playerMove.setWhoMove(whoMoveNow);
+                            playerMove.setPastMove(whoMoveNow == 1 ? clients.size() : whoMoveNow - 1);
 
                             System.out.println("Now move player = " + whoMoveNow);
+
+                            if(playerMove.getCountSetSquares() <= 0) {
+                                playerMove.setGameOver(true);
+                            }
 
                             serverMessage = new JSON<PlayerMove>().createJSON(playerMove);
 

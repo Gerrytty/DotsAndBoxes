@@ -19,14 +19,19 @@ public class MyLine {
     }
 
     public MyLine(LinePosition position, int x, int y) {
+        this(x, y);
         this.position = position;
-        this.x = x;
-        this.y = y;
     }
 
     public MyLine(int x, int y) {
         this.x = x;
         this.y = y;
+        if(x % 2 == 0 && y % 2 != 0) {
+            position = LinePosition.VERTICAL;
+        }
+        else if(x % 2 != 0 && y % 2 == 0) {
+            position = LinePosition.HORIZONTAL;
+        }
     }
 
     public MyLine(Point p1, Point p2) {

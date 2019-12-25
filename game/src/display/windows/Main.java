@@ -98,7 +98,7 @@ public class Main extends Application {
         return text;
     }
 
-    private static GridPane getPane(Text text, Button singlePlay, Button multiPlayer) {
+    public static GridPane getPane(Text text, Button singlePlay, Button multiPlayer) {
         GridPane gridPane = new GridPane();
         gridPane.setStyle("-fx-background-color: #09095f");
 

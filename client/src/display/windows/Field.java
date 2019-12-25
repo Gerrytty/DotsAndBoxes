@@ -42,8 +42,13 @@ public class Field extends Application {
 
     private static Player player;
 
+    private static HashMap<String, Integer> letters;
+
+    private static int countSetSquares;
+
     private Field() {
         grid = new GridPane();
+        letters = new HashMap<>();
     }
 
     public static Field getField() {
@@ -219,6 +224,8 @@ public class Field extends Application {
                 else {
                     PlayerMove playerMove = new PlayerMove();
                     playerMove.setMyMove(myLine);
+                    playerMove.setLetters(letters);
+                    playerMove.setCountSetSquares(countSetSquares);
                     Main.game.setPlayerMove(playerMove);
                     String s = new JSON<Game>().createJSON(Main.game);
                     Client.sendMessage(s);
@@ -270,25 +277,11 @@ public class Field extends Application {
         allSquares.forEach(square -> {
             if(square.isSet()) {
                 System.out.println("Square is set");
-//                if(iDraw) {
-//                    if(playerLetter.equals("@")) {
-//                        square.setLetter("A");
-//                    }
-//                    else {
-//                        square.setLetter(playerLetter);
-//                    }
-//                }
-//                else {
-//                    if(!letter.equals("@")) {
-//                        square.setLetter(letter);
-//                    }
-//                    else {
-//                        square.setLetter("A");
-//                    }
-//                }
                 square.setLetter(letter);
                 grid.add(createText(square.getLetter()), square.getX(), square.getY());
                 mySquare[0] = square;
+                letters.put(letter, letters.get(letter) == null ? 1 : letters.get(letter) + 1);
+                countSetSquares++;
                 if(letter.equals(playerLetter)) {
                     playerScore++;
                 }

@@ -42,8 +42,13 @@ public class Field extends Application {
 
     private static Player player;
 
+    private static HashMap<String, Integer> letters;
+
+    private static int countSetSquares;
+
     private Field() {
         grid = new GridPane();
+        letters = new HashMap<>();
     }
 
     public static Field getField() {
@@ -76,7 +81,7 @@ public class Field extends Application {
 
     }
 
-    private void generateField(int height, int width) {
+    public void generateField(int height, int width) {
 
         int h = height * 2 + 1;
         int w = width * 2 + 1;
@@ -219,6 +224,8 @@ public class Field extends Application {
                 else {
                     PlayerMove playerMove = new PlayerMove();
                     playerMove.setMyMove(myLine);
+                    playerMove.setLetters(letters);
+                    playerMove.setCountSetSquares(countSetSquares);
                     Main.game.setPlayerMove(playerMove);
                     String s = new JSON<Game>().createJSON(Main.game);
                     Client.sendMessage(s);
@@ -270,15 +277,11 @@ public class Field extends Application {
         allSquares.forEach(square -> {
             if(square.isSet()) {
                 System.out.println("Square is set");
-//                if(iDraw) {
-//                    square.setLetter(playerLetter);
-//                }
-//                else {
-//                    square.setLetter(letter);
-//                }
                 square.setLetter(letter);
                 grid.add(createText(square.getLetter()), square.getX(), square.getY());
                 mySquare[0] = square;
+                letters.put(letter, letters.get(letter) == null ? 1 : letters.get(letter) + 1);
+                countSetSquares++;
                 if(letter.equals(playerLetter)) {
                     playerScore++;
                 }
@@ -305,7 +308,7 @@ public class Field extends Application {
         return text;
     }
 
-    private ArrayList<Point> setPoints(int h, int w) {
+    public ArrayList<Point> setPoints(int h, int w) {
 
         ArrayList<Point> list = new ArrayList<>();
 
@@ -313,7 +316,6 @@ public class Field extends Application {
             for (int j = 0; j < h; j++) {
                 if(i % 2 == 0 && j % 2 == 0) {
                     list.add(new Point(i, j));
-
                 }
             }
         }
@@ -367,5 +369,6 @@ public class Field extends Application {
     public static int getPlayerNumber() {
         return playerNumber;
     }
+
 
 }
